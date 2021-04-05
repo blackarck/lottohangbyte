@@ -3,6 +3,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {MatIconRegistry} from '@angular/material/icon';
 import { AngularFireAuth } from '@angular/fire/auth';
 import firebase from 'firebase/app';
+import {UserServiceService} from '../service/user-service.service';
 
 const googleLogoURL = "https://raw.githubusercontent.com/fireflysemantics/logo/master/Google.svg";
 const twitterlogoURL = "https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/twitter.svg";
@@ -15,7 +16,7 @@ const ghublogoURL="https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/github.svg
 })
 export class LoginscrComponent implements OnInit {
 
-  constructor( private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer,public auth: AngularFireAuth) { 
+  constructor( private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer,public auth: AngularFireAuth, private userService: UserServiceService) { 
     this.matIconRegistry.addSvgIcon( "glogo", this.domSanitizer.bypassSecurityTrustResourceUrl(googleLogoURL));
     this.matIconRegistry.addSvgIcon( "tlogo", this.domSanitizer.bypassSecurityTrustResourceUrl(twitterlogoURL));
     this.matIconRegistry.addSvgIcon( "gitlogo", this.domSanitizer.bypassSecurityTrustResourceUrl(ghublogoURL));
@@ -26,7 +27,9 @@ export class LoginscrComponent implements OnInit {
 
   login() {
     this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then((res)=>{
-    console.log("google user "+ JSON.stringify(res.user))
+     //console.log("google user "+ JSON.stringify(res.user))
+     this.userService.setuser(res.user);
+     console.log("User set is "+ this.userService.mainuser.displayname);
     }).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
@@ -46,8 +49,9 @@ export class LoginscrComponent implements OnInit {
 
   tlogin(){
     this.auth.signInWithPopup(new firebase.auth.TwitterAuthProvider()).then((res)=>{
-    console.log("twitter user "+ JSON.stringify(res))
-    
+     //console.log("twitter user "+ JSON.stringify(res))
+     this.userService.setuser(res.user);
+     console.log("User set is "+ this.userService.mainuser.displayname);
     }).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
@@ -69,7 +73,9 @@ export class LoginscrComponent implements OnInit {
     this.auth.signInWithPopup(new firebase.auth.GithubAuthProvider()).then((res)=>{
       // The signed-in user info.
       var user = res.user;
-      console.log("Github user is "+ JSON.stringify(user));
+      //console.log("Github user is "+ JSON.stringify(user));
+      this.userService.setuser(res.user);
+     console.log("User set is "+ this.userService.mainuser.displayname);
     }).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
