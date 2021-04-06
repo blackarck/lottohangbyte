@@ -13,7 +13,7 @@ export class UserServiceService {
 
   setuser(takeuser:any){
     this.mainuser.displayname=takeuser.displayName;
-    this.mainuser.emailid=takeuser.emailid;
+    this.mainuser.emailid=takeuser.email;
     this.mainuser.photourl= takeuser.photoURL;
     this.mainuser.userid='';
   }

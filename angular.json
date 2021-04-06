@@ -7,7 +7,7 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
-          "strict": true
+          "strict": false
         }
       },
       "root": "",
@@ -115,7 +115,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "lottohangbyte1:serve"
+            "devServerTarget": "lottohangbyte:serve"
           },
           "configurations": {
             "production": {
@@ -126,5 +126,5 @@
       }
     }
   },
-  "defaultProject": "lottohangbyte1"
+  "defaultProject": "lottohangbyte"
 }

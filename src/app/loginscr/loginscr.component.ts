@@ -4,6 +4,8 @@ import {MatIconRegistry} from '@angular/material/icon';
 import { AngularFireAuth } from '@angular/fire/auth';
 import firebase from 'firebase/app';
 import {UserServiceService} from '../service/user-service.service';
+import { environment } from '../../environments/environment';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
 
 const googleLogoURL = "https://raw.githubusercontent.com/fireflysemantics/logo/master/Google.svg";
 const twitterlogoURL = "https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/twitter.svg";
@@ -16,7 +18,8 @@ const ghublogoURL="https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/github.svg
 })
 export class LoginscrComponent implements OnInit {
 
-  constructor( private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer,public auth: AngularFireAuth, private userService: UserServiceService) { 
+  constructor( private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer,public auth: AngularFireAuth, private userService: UserServiceService,
+    private http: HttpClient) { 
     this.matIconRegistry.addSvgIcon( "glogo", this.domSanitizer.bypassSecurityTrustResourceUrl(googleLogoURL));
     this.matIconRegistry.addSvgIcon( "tlogo", this.domSanitizer.bypassSecurityTrustResourceUrl(twitterlogoURL));
     this.matIconRegistry.addSvgIcon( "gitlogo", this.domSanitizer.bypassSecurityTrustResourceUrl(ghublogoURL));
@@ -30,6 +33,7 @@ export class LoginscrComponent implements OnInit {
      //console.log("google user "+ JSON.stringify(res.user))
      this.userService.setuser(res.user);
      console.log("User set is "+ this.userService.mainuser.displayname);
+     this.fetchuserdata();
     }).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
@@ -51,6 +55,7 @@ export class LoginscrComponent implements OnInit {
     this.auth.signInWithPopup(new firebase.auth.TwitterAuthProvider()).then((res)=>{
      //console.log("twitter user "+ JSON.stringify(res))
      this.userService.setuser(res.user);
+     this.fetchuserdata();
      console.log("User set is "+ this.userService.mainuser.displayname);
     }).catch(function(error) {
       // Handle Errors here.
@@ -75,6 +80,7 @@ export class LoginscrComponent implements OnInit {
       var user = res.user;
       //console.log("Github user is "+ JSON.stringify(user));
       this.userService.setuser(res.user);
+      this.fetchuserdata();
      console.log("User set is "+ this.userService.mainuser.displayname);
     }).catch(function(error) {
       // Handle Errors here.
@@ -98,4 +104,39 @@ export class LoginscrComponent implements OnInit {
     this.auth.signOut();
   }
 
+  fetchuserdata(){
+   
+    const APIendpoint=environment.APIEndpoint;
+    const posturl = APIendpoint+'/api/user/login';
+
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'Access-Control-Allow-Origin':'*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT',
+         //'authorization': this.token
+      })
+    };//end of httpoptions
+
+    this.http.post<any>(posturl,JSON.stringify(this.userService.mainuser),httpOptions).subscribe(
+      (res)=> {
+         //console.log("response " + res.message + " "  + res.success);
+        if (res.success){
+          
+           
+          
+        } else{
+          //do nothing and show the error message
+          console.log("Show error message " + res.message);
+           
+        }
+      } ,
+      (err)=> {
+        
+        console.log(err.error.message);
+      }
+    );
+
+
+  }
 }
