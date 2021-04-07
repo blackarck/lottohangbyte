@@ -106,15 +106,19 @@ export class LoginscrComponent implements OnInit {
 
   fetchuserdata(){
    
+   
+
     const APIendpoint=environment.APIEndpoint;
     const posturl = APIendpoint+'/api/user/login';
 
+
+   firebase.auth().currentUser?.getIdToken(true).then((idtoken)=>{
     let httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
         'Access-Control-Allow-Origin':'*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT',
-         //'authorization': this.token
+        'authorization': idtoken
       })
     };//end of httpoptions
 
@@ -122,7 +126,7 @@ export class LoginscrComponent implements OnInit {
       (res)=> {
          //console.log("response " + res.message + " "  + res.success);
         if (res.success){
-          
+          console.log("it was a success");
            
           
         } else{
@@ -132,11 +136,17 @@ export class LoginscrComponent implements OnInit {
         }
       } ,
       (err)=> {
-        
         console.log(err.error.message);
       }
     );
 
+    }).catch(function(error){
+      console.log("Network error please try again");
+    });
+   
 
-  }
-}
+   
+
+
+  }//end of fetch user
+}//end of class
