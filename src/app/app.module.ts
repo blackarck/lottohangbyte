@@ -11,17 +11,20 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginscrComponent } from './loginscr/loginscr.component';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 
 const appRoutes: Routes = [
   { path: 'loginscr', component: LoginscrComponent },
+  {path: 'dashboard', component: DashboardComponent},
   { path: '', redirectTo: '/loginscr', pathMatch: 'full'  }
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginscrComponent
+    LoginscrComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

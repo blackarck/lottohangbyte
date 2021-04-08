@@ -6,6 +6,9 @@ import firebase from 'firebase/app';
 import {UserServiceService} from '../service/user-service.service';
 import { environment } from '../../environments/environment';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import {MatSnackBar ,  MatSnackBarHorizontalPosition,  MatSnackBarVerticalPosition} from '@angular/material/snack-bar';
+
 
 const googleLogoURL = "https://raw.githubusercontent.com/fireflysemantics/logo/master/Google.svg";
 const twitterlogoURL = "https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/twitter.svg";
@@ -18,8 +21,13 @@ const ghublogoURL="https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/github.svg
 })
 export class LoginscrComponent implements OnInit {
 
+
+  horizontalPosition: MatSnackBarHorizontalPosition = 'right';
+  verticalPosition: MatSnackBarVerticalPosition = 'top';
+
+
   constructor( private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer,public auth: AngularFireAuth, private userService: UserServiceService,
-    private http: HttpClient) { 
+    private http: HttpClient,  private router: Router,  private _snackBar: MatSnackBar) { 
     this.matIconRegistry.addSvgIcon( "glogo", this.domSanitizer.bypassSecurityTrustResourceUrl(googleLogoURL));
     this.matIconRegistry.addSvgIcon( "tlogo", this.domSanitizer.bypassSecurityTrustResourceUrl(twitterlogoURL));
     this.matIconRegistry.addSvgIcon( "gitlogo", this.domSanitizer.bypassSecurityTrustResourceUrl(ghublogoURL));
@@ -105,12 +113,8 @@ export class LoginscrComponent implements OnInit {
   }
 
   fetchuserdata(){
-   
-   
-
     const APIendpoint=environment.APIEndpoint;
     const posturl = APIendpoint+'/api/user/login';
-
 
    firebase.auth().currentUser?.getIdToken(true).then((idtoken)=>{
     let httpOptions = {
@@ -127,16 +131,21 @@ export class LoginscrComponent implements OnInit {
          //console.log("response " + res.message + " "  + res.success);
         if (res.success){
           console.log("it was a success");
-           
+           if(res.usrexist|| res.usrcreated){
+             //take user to dashboard else show messag to try again
+             this.router.navigate(['/dashboard']);
+           }else{
+            this.openSnackBar("Something went wrong please try again.");
+           }
           
         } else{
           //do nothing and show the error message
-          console.log("Show error message " + res.message);
-           
+          console.log("Show error message " + JSON.stringify(res));
+          this.openSnackBar("Something went wrong please try again.");
         }
       } ,
       (err)=> {
-        console.log(err.error.message);
+        console.log("Error "+ JSON.stringify(err));
       }
     );
 
@@ -144,9 +153,14 @@ export class LoginscrComponent implements OnInit {
       console.log("Network error please try again");
     });
    
-
-   
-
-
   }//end of fetch user
+
+  openSnackBar(msgprmpt:string) {
+    this._snackBar.open(msgprmpt, '', {
+      duration: 1000,
+      horizontalPosition: this.horizontalPosition,
+      verticalPosition: this.verticalPosition,
+    });
+  }//end of opensnackbar
+
 }//end of class
