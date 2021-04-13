@@ -37,32 +37,31 @@ export class LoginscrComponent implements OnInit {
   }
 
   login() {
-    this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then((res)=>{
-     //console.log("google user "+ JSON.stringify(res.user))
-     this.userService.setuser(res.user);
-     console.log("User set is "+ this.userService.mainuser.displayname);
-     this.fetchuserdata();
-    }).catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // The email of the user's account used.
-      var email = error.email;
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-      if (errorCode === 'auth/account-exists-with-different-credential') {
-        alert('You have signed up with a different provider for that email.');
-        // Handle linking here if your app allows it.
-      } else {
-        console.error(error);
-      };
-    });;
+    this.userService.googleLogin().then((res)=>{
+      //res is the http observable returned from fetchuser in userservices
+      res.subscribe((res1)=>{
+        console.log("Value of res is "+JSON.stringify(res1));
+        if (res1.success){
+          console.log("it was a success");
+           if(res1.usrexist|| res1.usrcreated){
+             //take user to dashboard else show messag to try again
+             this.router.navigate(['/dashboard']);
+           }else{
+            this.openSnackBar("Something went wrong please try again.");
+           }
+        } else{
+          //do nothing and show the error message
+          console.log("Show error message " + JSON.stringify(res));
+          this.openSnackBar("Something went wrong please try again.");
+        }
+      });
+    })
   }
 
   tlogin(){
     this.auth.signInWithPopup(new firebase.auth.TwitterAuthProvider()).then((res)=>{
      //console.log("twitter user "+ JSON.stringify(res))
-     this.userService.setuser(res.user);
+     //this.userService.setuser(res.user,this.auth);
      this.fetchuserdata();
      console.log("User set is "+ this.userService.mainuser.displayname);
     }).catch(function(error) {
@@ -87,7 +86,7 @@ export class LoginscrComponent implements OnInit {
       // The signed-in user info.
       var user = res.user;
       //console.log("Github user is "+ JSON.stringify(user));
-      this.userService.setuser(res.user);
+    //  this.userService.setuser(res.user,this.auth);
       this.fetchuserdata();
      console.log("User set is "+ this.userService.mainuser.displayname);
     }).catch(function(error) {

@@ -1,1 +1,20 @@
-<p>dashboard works!</p>
+<mat-toolbar class="menubar">
+    <!-- <mat-toolbar-row> -->
+    <span class="titleltxt"><h4>Suerte </h4></span>
+    <span class="dash-spacer"></span>
+
+
+    <img src="{{photourl}}" alt="Avatar" class="avatar" [matTooltip]="username" matTooltipHideDelay="200">
+    <!--
+        Show logged in user image now
+        <button mat-icon-button [routerLink]="['/dashboard/home']">
+          <mat-icon class="dash-icon" aria-hidden="false" aria-label="home icon">home</mat-icon>
+        </button>
+    -->
+    <button mat-icon-button aria-label="logout" [matTooltip]="logouttxt" matTooltipHideDelay="200" (click)="logout()">
+          <mat-icon class="dash-icon" aria-hidden="false" aria-label="exit_to_app icon">exit_to_app</mat-icon>
+        </button>
+    <!-- <mat-icon class="dash-icon" aria-hidden="false" aria-label="Example delete icon">delete</mat-icon> -->
+    <!-- </mat-toolbar-row>-->
+
+</mat-toolbar>
