@@ -70,7 +70,57 @@ export class UserServiceService {
     })
   }//end of function google login
 
-  
+  twittlogin():any{
+    return new Promise((resolve,reject)=>{
+      this.auth.signInWithPopup(new firebase.auth.TwitterAuthProvider()).then((res)=>{
+      //console.log("google user "+ JSON.stringify(res.user))
+      this.setuser(res.user );
+      console.log("User set is "+ this.mainuser.displayname);
+      resolve(this.fetchuserdata());
+     }).catch(function(error) {
+       // Handle Errors here.
+       var errorCode = error.code;
+       reject(errorCode);
+       var errorMessage = error.message;
+       // The email of the user's account used.
+       var email = error.email;
+       // The firebase.auth.AuthCredential type that was used.
+       var credential = error.credential;
+       if (errorCode === 'auth/account-exists-with-different-credential') {
+         alert('You have signed up with a different provider for that email.');
+         // Handle linking here if your app allows it.
+       } else {
+         console.error(error);
+       };
+     });
+    })
+  }
+
+  gittlogin():any{
+    return new Promise((resolve,reject)=>{
+      this.auth.signInWithPopup(new firebase.auth.GithubAuthProvider()).then((res)=>{
+      //console.log("google user "+ JSON.stringify(res.user))
+      this.setuser(res.user );
+      console.log("User set is "+ this.mainuser.displayname);
+      resolve(this.fetchuserdata());
+     }).catch(function(error) {
+       // Handle Errors here.
+       var errorCode = error.code;
+       reject(errorCode);
+       var errorMessage = error.message;
+       // The email of the user's account used.
+       var email = error.email;
+       // The firebase.auth.AuthCredential type that was used.
+       var credential = error.credential;
+       if (errorCode === 'auth/account-exists-with-different-credential') {
+         alert('You have signed up with a different provider for that email.');
+         // Handle linking here if your app allows it.
+       } else {
+         console.error(error);
+       };
+     });
+    })
+  }
 
 fetchuserdata():any{
   return new Promise((resolve, reject )=>{
